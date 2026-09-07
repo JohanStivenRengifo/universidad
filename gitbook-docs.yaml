@@ -1,0 +1,12 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: Electiva 1
+  structure:
+    - type: space
+      key: space-1
+      title: Docs
+      path: docs
+      default: true
+      content:
+        directory: ./docs
+        language: es
