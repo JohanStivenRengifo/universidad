@@ -1,0 +1,107 @@
+```mermaid
+erDiagram
+
+    users {
+        uuid id PK
+        varchar email
+        varchar name
+        varchar role
+        boolean is_active
+        timestamp created_at
+        varchar password
+        timestamp last_login_at
+        varchar employee_code
+        date hire_date
+        varchar position
+        text permissions
+        timestamptz updated_at
+        varchar phone
+        uuid branch_id
+        uuid company_id
+        boolean email_verified
+        text print_preferences
+    }
+
+    auth_accounts {
+        text id PK
+        text account_id
+        text provider_id
+        uuid user_id FK
+        text access_token
+        text refresh_token
+        text id_token
+        timestamptz access_token_expires_at
+        timestamptz refresh_token_expires_at
+        text scope
+        text password
+        timestamptz created_at
+    }
+
+    auth_sessions {
+        text id PK
+        timestamptz expires_at
+        text token
+        timestamptz created_at
+        text ip_address
+        text user_agent
+        uuid user_id FK
+    }
+
+    auth_verifications {
+        text id PK
+        text identifier
+        text value
+        timestamptz expires_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    auth_verification_codes {
+        uuid id PK
+        uuid user_id FK
+        varchar code
+        varchar purpose
+        boolean is_used
+        timestamptz expires_at
+        timestamptz created_at
+        uuid sale_id
+        uuid requested_by_user_id FK
+    }
+
+    auth_access_logs {
+        uuid id PK
+        text event_type
+        uuid user_id FK
+        text email
+        text session_id
+        text ip_address
+        text user_agent
+        text device_label
+        boolean success
+        text metadata
+        timestamptz created_at
+    }
+
+    security_audit_logs {
+        uuid id PK
+        timestamptz created_at
+        varchar event_type
+        varchar severity
+        uuid user_id
+        varchar user_email
+        varchar resource_type
+        varchar resource_id
+        varchar action
+        text details
+        varchar ip_address
+        text user_agent
+        varchar request_id
+        text metadata
+    }
+
+    users ||--o{ auth_accounts : "user_id"
+    users ||--o{ auth_sessions : "user_id"
+    users ||--o{ auth_verification_codes : "user_id"
+    users ||--o{ auth_verification_codes : "requested_by_user_id"
+    users ||--o{ auth_access_logs : "user_id"
+```

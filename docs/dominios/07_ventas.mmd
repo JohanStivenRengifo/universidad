@@ -1,0 +1,166 @@
+```mermaid
+erDiagram
+
+    sales {
+        uuid id PK
+        varchar sale_number
+        uuid customer_id
+        varchar customer_document_type
+        varchar customer_document_number
+        varchar customer_name
+        numeric subtotal
+        numeric tax_amount
+        numeric discount_amount
+        numeric total_amount
+        varchar payment_method
+        varchar status
+        uuid user_id FK
+        text notes
+        timestamp created_at
+        uuid shift_id FK
+        varchar invoice_type
+        text delivery_address
+        date delivery_date
+        numeric delivery_cost
+        uuid payment_method_id FK
+        boolean otp_authorized
+        uuid branch_id
+        timestamp updated_at
+        varchar fulfillment_status
+        numeric balance_due
+        date due_date_v2
+        timestamptz completed_at
+        timestamptz cancelled_at
+    }
+
+    sale_items {
+        uuid id PK
+        uuid sale_id FK
+        uuid product_id
+        varchar product_name
+        numeric quantity
+        numeric unit_price
+        numeric discount_percentage
+        numeric tax_rate
+        numeric subtotal
+        numeric tax_amount
+        numeric total
+        uuid packaging_id FK
+    }
+
+    sale_payments {
+        uuid id PK
+        uuid sale_id FK
+        uuid payment_method_id FK
+        numeric amount
+        varchar reference
+        varchar bank
+        varchar account_number
+        varchar card_last_four
+        varchar authorization_code
+        text notes
+        timestamptz created_at
+        uuid created_by FK
+    }
+
+    sale_attachments {
+        uuid id PK
+        uuid sale_id FK
+        uuid uploaded_by FK
+        text file_name
+        text mime_type
+        text storage_key
+        integer file_size
+        timestamptz created_at
+    }
+
+    sale_comments {
+        uuid id PK
+        uuid sale_id FK
+        uuid user_id FK
+        text body
+        timestamptz created_at
+    }
+
+    sale_documents {
+        uuid id PK
+        uuid sale_id FK
+        varchar type
+        varchar number
+        varchar external_reference
+        varchar status
+        varchar source_table
+        uuid source_id
+        timestamptz issued_at
+        text metadata
+        timestamptz created_at
+    }
+
+    sale_timeline_events {
+        uuid id PK
+        uuid sale_id FK
+        varchar event_type
+        varchar label
+        numeric amount
+        uuid actor_user_id FK
+        text notes
+        timestamptz occurred_at
+        text payload
+        timestamptz created_at
+    }
+
+    pos_sale_idempotency {
+        text idempotency_key PK
+        uuid sale_id FK
+        text sale_number
+        text response_payload
+        timestamptz created_at
+        varchar status
+    }
+
+    delivery_orders {
+        uuid id PK
+        varchar delivery_number
+        uuid sale_id FK
+        uuid quote_id
+        varchar status
+        text delivery_address
+        date scheduled_date
+        timestamp dispatched_at
+        timestamp delivered_at
+        text notes
+        uuid created_by FK
+        timestamp created_at
+    }
+
+    pre_invoices {
+        uuid id PK
+        varchar document_number
+        uuid cart_id
+        uuid customer_id FK
+        varchar customer_document_type
+        varchar customer_document_number
+        varchar customer_name
+        varchar cashier_name
+        uuid user_id FK
+        uuid branch_id
+        uuid shift_id
+        numeric subtotal
+        numeric tax_amount
+        numeric discount_amount
+        numeric total_amount
+        integer line_count
+        numeric product_count
+        text print_payload
+        timestamp created_at
+    }
+
+    sales ||--o{ sale_items : "sale_id"
+    sales ||--o{ sale_payments : "sale_id"
+    sales ||--o{ sale_attachments : "sale_id"
+    sales ||--o{ sale_comments : "sale_id"
+    sales ||--o{ sale_documents : "sale_id"
+    sales ||--o{ sale_timeline_events : "sale_id"
+    sales ||--o{ pos_sale_idempotency : "sale_id"
+    sales ||--o{ delivery_orders : "sale_id"
+```

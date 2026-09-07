@@ -1,0 +1,119 @@
+```mermaid
+erDiagram
+
+    chart_of_accounts {
+        uuid id PK
+        varchar code
+        text name
+        varchar account_type
+        varchar normal_balance
+        uuid parent_id FK
+        boolean is_active
+        text description
+        timestamptz created_at
+    }
+
+    journal_entries {
+        uuid id PK
+        varchar entry_number
+        date entry_date
+        text description
+        varchar status
+        uuid financial_movement_id FK
+        varchar source_module
+        uuid source_id
+        varchar movement_type
+        uuid branch_id FK
+        uuid reversal_of_entry_id FK
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    journal_lines {
+        uuid id PK
+        uuid journal_entry_id FK
+        uuid account_id FK
+        integer line_number
+        numeric debit
+        numeric credit
+        text description
+        uuid customer_id FK
+        text metadata
+        timestamptz created_at
+    }
+
+    financial_movements {
+        uuid id PK
+        uuid tenant_id
+        uuid branch_id FK
+        varchar movement_type
+        varchar source_module
+        uuid source_id
+        uuid customer_id FK
+        numeric amount
+        varchar direction
+        varchar status
+        uuid reversal_of_id FK
+        timestamp occurred_at
+        text metadata
+        uuid created_by FK
+        timestamp created_at
+    }
+
+    financial_movement_links {
+        uuid id PK
+        uuid movement_id FK
+        varchar link_type
+        uuid link_id
+        varchar link_role
+        timestamp created_at
+    }
+
+    financial_balances {
+        uuid id PK
+        uuid tenant_id
+        varchar dimension_type
+        uuid dimension_id
+        numeric amount
+        varchar currency_code
+        integer version
+        timestamp updated_at
+    }
+
+    financial_closings {
+        uuid id PK
+        uuid shift_id FK
+        uuid branch_id FK
+        varchar shift_number
+        date closing_date
+        varchar status
+        text dashboard
+        text findings
+        timestamptz locked_at
+        uuid locked_by FK
+        text lock_reason
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    financial_close_runs {
+        uuid id PK
+        uuid branch_id FK
+        date period_from
+        date period_to
+        varchar overall_result
+        text checklist
+        text report
+        text executive_summary
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    chart_of_accounts ||--o{ chart_of_accounts : "parent_id"
+    chart_of_accounts ||--o{ journal_lines : "account_id"
+    journal_entries ||--o{ journal_lines : "journal_entry_id"
+    journal_entries ||--o{ journal_entries : "reversal_of_entry_id"
+    financial_movements ||--o{ financial_movement_links : "movement_id"
+    financial_movements ||--o{ financial_movements : "reversal_of_id"
+    financial_movements ||--o{ journal_entries : "financial_movement_id"
+```

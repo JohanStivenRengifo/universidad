@@ -1,0 +1,84 @@
+```mermaid
+erDiagram
+
+    whatsapp_conversations {
+        uuid id PK
+        varchar phone_number
+        varchar customer_name
+        uuid customer_id FK
+        timestamptz last_message_at
+        text last_message_preview
+        integer unread_count
+        boolean is_archived
+        text metadata
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    whatsapp_messages {
+        uuid id PK
+        uuid conversation_id FK
+        varchar kapso_message_id
+        varchar direction
+        varchar message_type
+        text content
+        text media_url
+        varchar media_mime_type
+        varchar template_name
+        text template_params
+        varchar status
+        uuid sent_by_user_id FK
+        boolean is_automated
+        text metadata
+        timestamptz created_at
+    }
+
+    whatsapp_auto_reply_rules {
+        uuid id PK
+        varchar name
+        text description
+        varchar trigger_type
+        text keywords
+        varchar match_type
+        varchar reply_type
+        text reply_content
+        varchar template_name
+        text template_params
+        boolean is_active
+        integer priority
+        boolean apply_once_per_conversation
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    whatsapp_auto_reply_history {
+        uuid id PK
+        uuid conversation_id FK
+        uuid rule_id FK
+        uuid message_id FK
+        timestamptz triggered_at
+    }
+
+    whatsapp_sync_logs {
+        uuid id PK
+        timestamptz started_at
+        timestamptz completed_at
+        uuid started_by FK
+        varchar status
+        integer conversations_processed
+        integer conversations_new
+        integer messages_processed
+        integer messages_new
+        integer messages_skipped
+        integer errors_count
+        text error_details
+        integer duration_ms
+        varchar sync_type
+        timestamptz created_at
+    }
+
+    whatsapp_conversations ||--o{ whatsapp_messages : "conversation_id"
+    whatsapp_conversations ||--o{ whatsapp_auto_reply_history : "conversation_id"
+    whatsapp_messages ||--o{ whatsapp_auto_reply_history : "message_id"
+    whatsapp_auto_reply_rules ||--o{ whatsapp_auto_reply_history : "rule_id"
+```

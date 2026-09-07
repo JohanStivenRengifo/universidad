@@ -1,0 +1,140 @@
+```mermaid
+erDiagram
+
+    credits {
+        uuid id PK
+        varchar credit_number
+        uuid sale_id FK
+        uuid customer_id FK
+        numeric principal_amount
+        numeric balance
+        numeric interest_rate
+        date due_date
+        varchar status
+        uuid created_by FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    credit_installments {
+        uuid id PK
+        uuid credit_id FK
+        integer installment_number
+        numeric principal_amount
+        numeric balance
+        date due_date
+        varchar status
+        timestamp paid_at
+        timestamp created_at
+    }
+
+    credit_history {
+        uuid id PK
+        uuid credit_id FK
+        varchar event_type
+        numeric amount
+        numeric balance_before
+        numeric balance_after
+        varchar reference_type
+        uuid reference_id
+        text notes
+        uuid user_id FK
+        timestamp created_at
+    }
+
+    credit_payments {
+        uuid id PK
+        uuid sale_id FK
+        uuid customer_id FK
+        numeric amount
+        timestamp payment_date
+        text notes
+        uuid created_by FK
+        timestamp created_at
+        uuid credit_id FK
+        boolean is_reversed
+        uuid payment_method_id FK
+        uuid cash_receipt_id FK
+    }
+
+    credit_notes {
+        uuid id PK
+        varchar factus_number
+        varchar cufe
+        varchar status
+        integer numbering_range_id
+        varchar reference_code
+        integer correction_concept_code
+        varchar payment_method_code
+        text observation
+        boolean send_email
+        text factus_response
+        uuid sale_return_id
+        uuid branch_id
+        timestamp created_at
+    }
+
+    customer_advances {
+        uuid id PK
+        uuid customer_id FK
+        uuid cash_receipt_id FK
+        numeric original_amount
+        numeric available_amount
+        varchar status
+        text notes
+        uuid created_by FK
+        timestamptz voided_at
+        uuid voided_by FK
+        timestamptz created_at
+    }
+
+    customer_advance_applications {
+        uuid id PK
+        uuid advance_id FK
+        uuid credit_id FK
+        numeric applied_amount
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    cash_receipts {
+        uuid id PK
+        varchar number
+        uuid customer_id FK
+        varchar status
+        uuid payment_method_id FK
+        numeric total_amount
+        text notes
+        uuid created_by FK
+        timestamp posted_at
+        timestamp voided_at
+        uuid voided_by FK
+        text void_reason
+        timestamp created_at
+    }
+
+    cash_receipt_applications {
+        uuid id PK
+        uuid receipt_id FK
+        uuid credit_id FK
+        numeric applied_amount
+        timestamp created_at
+    }
+
+    cash_receipt_history {
+        uuid id PK
+        uuid receipt_id FK
+        varchar action
+        text payload
+        uuid user_id FK
+        timestamp created_at
+    }
+
+    credits ||--o{ credit_installments : "credit_id"
+    credits ||--o{ credit_history : "credit_id"
+    credits ||--o{ credit_payments : "credit_id"
+    cash_receipts ||--o{ cash_receipt_applications : "receipt_id"
+    cash_receipts ||--o{ cash_receipt_history : "receipt_id"
+    cash_receipts ||--o{ credit_payments : "cash_receipt_id"
+    customer_advances ||--o{ customer_advance_applications : "advance_id"
+```

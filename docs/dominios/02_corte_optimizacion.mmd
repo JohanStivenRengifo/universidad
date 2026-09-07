@@ -1,0 +1,71 @@
+```mermaid
+erDiagram
+
+    cutting_projects {
+        uuid id PK
+        uuid quote_id FK
+        varchar project_name
+        text description
+        varchar status
+        numeric total_cost
+        numeric total_waste_percentage
+        numeric efficiency_percentage
+        integer total_panels_required
+        varchar optimization_algorithm
+        boolean allow_rotation
+        numeric kerf_width_mm
+        numeric waste_tolerance_percentage
+        uuid created_by FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    cutting_layouts {
+        uuid id PK
+        uuid project_id FK
+        uuid panel_id FK
+        integer panel_sequence
+        text layout_data
+        integer total_pieces_in_layout
+        numeric used_area_cm2
+        numeric waste_area_cm2
+        numeric efficiency_percentage
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    cutting_pieces {
+        uuid id PK
+        uuid project_id FK
+        varchar piece_name
+        text description
+        numeric width_cm
+        numeric length_cm
+        integer thickness_mm
+        integer quantity
+        varchar grain_direction
+        boolean allow_rotation
+        integer priority
+        integer sequence_order
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    optimization_runs {
+        uuid id PK
+        uuid project_id FK
+        varchar algorithm_version
+        integer total_panels_used
+        numeric total_efficiency
+        integer execution_time_ms
+        text parameters
+        integer solution_count
+        uuid best_solution_id FK
+        timestamptz created_at
+    }
+
+    cutting_projects ||--o{ cutting_layouts : "project_id"
+    cutting_projects ||--o{ cutting_pieces : "project_id"
+    cutting_projects ||--o{ optimization_runs : "project_id"
+    cutting_layouts ||--o{ optimization_runs : "best_solution_id"
+```

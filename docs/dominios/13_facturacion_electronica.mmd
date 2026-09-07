@@ -1,0 +1,123 @@
+```mermaid
+erDiagram
+
+    electronic_invoices {
+        uuid id PK
+        uuid sale_id
+        varchar sale_number
+        varchar factus_number
+        varchar cufe
+        varchar status
+        integer numbering_range_id
+        varchar reference_code
+        varchar payment_form
+        varchar payment_method_code
+        integer operation_type
+        text observation
+        boolean send_email
+        text factus_response
+        uuid branch_id
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    adjustment_notes {
+        uuid id PK
+        uuid support_document_id
+        varchar factus_number
+        varchar status
+        integer numbering_range_id
+        varchar reference_code
+        varchar correction_concept_code
+        varchar payment_method_code
+        text observation
+        text factus_response
+        uuid branch_id
+        timestamp created_at
+    }
+
+    support_documents {
+        uuid id PK
+        uuid purchase_id
+        varchar factus_number
+        varchar status
+        integer numbering_range_id
+        varchar reference_code
+        varchar payment_method_code
+        text observation
+        text factus_response
+        uuid branch_id
+        timestamp created_at
+        varchar provider_document_type
+        varchar provider_document_number
+        varchar provider_name
+    }
+
+    support_document_lines {
+        uuid id PK
+        uuid support_document_id FK
+        integer line_number
+        varchar code_reference
+        varchar description
+        numeric quantity
+        numeric unit_price
+        numeric tax_rate
+        numeric subtotal
+        numeric tax_amount
+        numeric total
+        timestamp created_at
+    }
+
+    factus_oauth_tokens {
+        uuid company_id PK
+        text access_token_enc
+        text refresh_token_enc
+        timestamptz expires_at
+        text token_type
+        timestamptz updated_at
+    }
+
+    factus_provider_credentials {
+        uuid company_id PK
+        text client_id_enc
+        text client_secret_enc
+        text username_enc
+        text password_enc
+        text api_base_url
+        text environment
+        timestamptz updated_at
+    }
+
+    dian_numbering_ranges_cache {
+        integer id PK
+        uuid company_id
+        text document_code
+        text prefix
+        text resolution_number
+        integer current_number
+        integer from_number
+        integer to_number
+        boolean is_active
+        text raw_payload
+        timestamptz synced_at
+    }
+
+    fe_command_idempotency {
+        text idempotency_key PK
+        text command_name
+        text result
+        timestamptz created_at
+    }
+
+    fiscal_email_deliveries {
+        uuid id PK
+        text document_kind
+        uuid document_id
+        text recipient
+        text status
+        text provider_response
+        timestamptz created_at
+    }
+
+    support_documents ||--o{ support_document_lines : "support_document_id"
+```

@@ -1,0 +1,43 @@
+```mermaid
+erDiagram
+
+    quotes {
+        uuid id PK
+        varchar quote_number
+        uuid customer_id FK
+        varchar customer_document_type
+        varchar customer_document_number
+        varchar customer_name
+        numeric subtotal
+        numeric tax_amount
+        numeric discount_amount
+        numeric total_amount
+        varchar status
+        uuid user_id FK
+        text notes
+        text terms
+        date valid_until
+        uuid converted_to_sale_id
+        timestamp created_at
+        timestamp updated_at
+        varchar fulfillment_status
+    }
+
+    quote_items {
+        uuid id PK
+        uuid quote_id FK
+        uuid product_id FK
+        varchar product_name
+        varchar product_code
+        numeric quantity
+        numeric unit_price
+        numeric discount_percentage
+        numeric tax_rate
+        numeric subtotal
+        numeric total
+        text notes
+        timestamp created_at
+    }
+
+    quotes ||--o{ quote_items : "quote_id"
+```

@@ -1,0 +1,18 @@
+```mermaid
+erDiagram
+
+    stock_movements {
+        uuid id PK
+        uuid product_id FK
+        varchar movement_type
+        numeric quantity
+        varchar reference_type
+        uuid reference_id
+        text notes
+        uuid user_id FK
+        timestamp created_at
+        numeric stock_before
+        numeric stock_after
+        uuid packaging_id FK
+    }
+```

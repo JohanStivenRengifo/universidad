@@ -1,0 +1,106 @@
+```mermaid
+erDiagram
+
+    email_inbox_threads {
+        uuid id PK
+        text participant_email
+        text participant_name
+        text subject
+        timestamptz last_message_at
+        text last_message_preview
+        integer unread_count
+        timestamptz created_at
+    }
+
+    email_inbox_messages {
+        uuid id PK
+        uuid thread_id FK
+        varchar direction
+        text provider_message_id
+        text from_address
+        text to_addresses
+        text subject
+        text html_body
+        text text_body
+        text snippet
+        text status
+        text error_message
+        timestamptz sent_at
+        timestamptz received_at
+        timestamptz created_at
+    }
+
+    email_logs {
+        uuid id PK
+        text idempotency_key
+        uuid correlation_id
+        text template_key
+        integer template_version
+        text recipient
+        text subject
+        varchar status
+        text message_preview
+        text error_message
+        text provider_response
+        text template_variables
+        text reference_type
+        uuid reference_id
+        integer attempts
+        timestamptz sent_at
+        timestamptz created_at
+    }
+
+    email_outbox {
+        uuid id PK
+        uuid email_log_id FK
+        text idempotency_key
+        text payload
+        text status
+        integer attempts
+        timestamptz next_retry_at
+        text last_error
+        timestamptz created_at
+        timestamptz processed_at
+    }
+
+    email_templates {
+        uuid id PK
+        text template_key
+        integer version
+        text subject_template
+        text html_template
+        text text_template
+        boolean is_active
+        timestamptz created_at
+    }
+
+    notification_deliveries {
+        uuid id PK
+        uuid correlation_id
+        varchar channel
+        varchar status
+        text recipient_masked
+        text document_type
+        text document_id
+        text provider_message_id
+        text error_message
+        integer attempts
+        timestamptz created_at
+    }
+
+    outbox_events {
+        uuid id PK
+        varchar event_type
+        uuid aggregate_id
+        varchar aggregate_type
+        text payload
+        uuid branch_id
+        timestamp created_at
+        timestamp processed_at
+        integer attempts
+        text last_error
+    }
+
+    email_inbox_threads ||--o{ email_inbox_messages : "thread_id"
+    email_logs ||--o{ email_outbox : "email_log_id"
+```

@@ -1,0 +1,100 @@
+```mermaid
+erDiagram
+
+    audit_log {
+        uuid id PK
+        varchar table_name
+        uuid record_id
+        varchar action
+        text old_values
+        text new_values
+        text changed_fields
+        uuid user_id FK
+        varchar user_email
+        varchar user_role
+        varchar ip_address
+        text user_agent
+        timestamptz created_at
+        text query_text
+        boolean is_sensitive
+    }
+
+    api_logs {
+        uuid id PK
+        uuid request_id
+        timestamptz created_at
+        text method
+        text path
+        integer status_code
+        integer duration_ms
+        text module
+        uuid ref_id
+        uuid user_id FK
+        text user_email
+        varchar user_role
+        text ip_address
+        text user_agent
+        text env
+        text meta
+    }
+
+    app_error_logs {
+        integer id PK
+        timestamptz timestamp
+        text level
+        text message
+        text error_code
+        text stack_trace
+        uuid user_id
+        text request_path
+        text request_method
+        varchar ip_address
+        text user_agent
+        text metadata
+    }
+
+    db_query_logs {
+        uuid id PK
+        uuid user_id
+        text query
+        integer execution_time
+        integer row_count
+        text error
+        text branch
+        timestamptz created_at
+    }
+
+    system_logs {
+        uuid id PK
+        varchar severity
+        varchar event_type
+        varchar module
+        varchar action
+        uuid user_id FK
+        varchar user_role
+        varchar entity_type
+        varchar entity_id
+        varchar reference
+        text summary
+        text payload
+        text error_message
+        text stack_trace
+        varchar status
+        varchar ip
+        varchar session_id
+        timestamptz created_at
+    }
+
+    financial_audit_logs {
+        uuid id PK
+        varchar entity_type
+        varchar entity_id
+        varchar action
+        text before_data
+        text after_data
+        uuid performed_by FK
+        varchar ip_address
+        text user_agent
+        timestamptz created_at
+    }
+```

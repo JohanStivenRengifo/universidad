@@ -1,0 +1,62 @@
+```mermaid
+erDiagram
+
+    tasks {
+        uuid id PK
+        varchar task_number
+        varchar title
+        text description
+        varchar priority
+        varchar status
+        varchar source
+        uuid assignee_id FK
+        uuid created_by FK
+        uuid branch_id
+        timestamptz due_at
+        timestamptz completed_at
+        text source_key
+        text ai_context
+        text metadata
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    task_attachments {
+        uuid id PK
+        uuid task_id FK
+        uuid uploaded_by FK
+        text file_name
+        text mime_type
+        text storage_key
+        integer file_size
+        timestamptz created_at
+    }
+
+    task_collaborators {
+        uuid task_id PK,FK
+        uuid user_id PK,FK
+        timestamptz created_at
+    }
+
+    task_comments {
+        uuid id PK
+        uuid task_id FK
+        uuid user_id FK
+        text body
+        timestamptz created_at
+    }
+
+    task_links {
+        uuid id PK
+        uuid task_id FK
+        varchar entity_type
+        uuid entity_id
+        text label
+        timestamptz created_at
+    }
+
+    tasks ||--o{ task_attachments : "task_id"
+    tasks ||--o{ task_collaborators : "task_id"
+    tasks ||--o{ task_comments : "task_id"
+    tasks ||--o{ task_links : "task_id"
+```

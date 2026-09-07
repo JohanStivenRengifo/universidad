@@ -1,0 +1,39 @@
+```mermaid
+erDiagram
+
+    returns {
+        uuid id PK
+        uuid sale_id FK
+        uuid user_id FK
+        uuid shift_id FK
+        numeric total_refund
+        text reason
+        text notes
+        timestamp created_at
+        uuid branch_id
+        varchar return_number
+        varchar status
+    }
+
+    return_items {
+        uuid id PK
+        uuid return_id FK
+        uuid sale_item_id FK
+        uuid product_id FK
+        numeric quantity
+        numeric unit_price
+        numeric subtotal
+        numeric tax_amount
+        numeric total
+    }
+
+    return_command_idempotency {
+        text idempotency_key PK
+        text command_name
+        uuid return_id
+        text result
+        timestamptz created_at
+    }
+
+    returns ||--o{ return_items : "return_id"
+```

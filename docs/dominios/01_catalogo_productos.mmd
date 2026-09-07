@@ -1,0 +1,249 @@
+```mermaid
+erDiagram
+
+    categories {
+        uuid id PK
+        varchar name
+        text description
+        uuid parent_id FK
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    products {
+        uuid id PK
+        varchar name
+        uuid category_id FK
+        varchar unit_of_measure
+        numeric cost_price
+        numeric sale_price
+        numeric stock_quantity
+        numeric min_stock
+        numeric tax_rate
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+        varchar barcode
+        uuid tax_id FK
+        uuid supplier_id FK
+        uuid branch_id
+        text description
+        text image_url
+        varchar product_type
+        numeric reorder_point
+        varchar commercialization_type
+    }
+
+    product_images {
+        uuid id PK
+        uuid product_id FK
+        text storage_key
+        integer sort_order
+        timestamptz created_at
+    }
+
+    product_packagings {
+        uuid id PK
+        uuid product_id FK
+        uuid presentation_type_id FK
+        varchar name
+        varchar code
+        numeric conversion_quantity
+        varchar base_unit_code
+        varchar barcode
+        varchar sku
+        numeric weight
+        numeric length
+        numeric width
+        numeric height
+        numeric suggested_sale_price
+        boolean is_default_purchase
+        boolean is_default_sale
+        boolean is_active
+        integer display_order
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    packaging_presentation_types {
+        uuid id PK
+        varchar code
+        varchar name
+        varchar group_code
+        integer display_order
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    product_box_specs {
+        uuid id PK
+        uuid product_id FK
+        integer units_per_box
+        numeric box_weight_kg
+        boolean sell_only_full_box
+        boolean allow_loose_units
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    product_length_specs {
+        uuid id PK
+        uuid product_id FK
+        varchar base_unit
+        boolean allow_decimal_sales
+        numeric minimum_sale_quantity
+        numeric step_quantity
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    product_unit_specs {
+        uuid id PK
+        uuid product_id FK
+        numeric weight_kg
+        varchar sale_unit_code
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    product_volume_specs {
+        uuid id PK
+        uuid product_id FK
+        varchar base_unit
+        boolean allow_decimal_sales
+        numeric minimum_sale_quantity
+        numeric step_quantity
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    product_weight_specs {
+        uuid id PK
+        uuid product_id FK
+        varchar base_unit
+        boolean allow_decimal_sales
+        numeric minimum_sale_quantity
+        numeric step_quantity
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    product_price_history {
+        uuid id PK
+        uuid product_id FK
+        numeric cost_price
+        numeric sale_price
+        numeric tax_rate
+        uuid purchase_order_id FK
+        varchar reason
+        text notes
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    price_lists {
+        uuid id PK
+        varchar name
+        varchar code
+        boolean is_active
+        boolean is_default
+        uuid branch_id FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    price_list_items {
+        uuid id PK
+        uuid price_list_id FK
+        uuid product_id FK
+        numeric unit_price
+        numeric tax_rate
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    tile_specs {
+        uuid id PK
+        uuid product_id FK
+        varchar material_type
+        varchar tile_format
+        numeric width_cm
+        numeric length_cm
+        numeric thickness_mm
+        numeric area_per_tile_m2
+        integer tiles_per_box
+        numeric m2_per_box
+        numeric box_weight_kg
+        varchar preferred_sale_unit
+        boolean allow_partial_box
+        varchar color
+        varchar finish
+        varchar product_line
+        varchar texture
+        varchar usage_area
+        varchar traffic_type
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+        uuid created_by FK
+    }
+
+    pvc_combo_config {
+        uuid id PK
+        uuid product_id FK
+        integer display_order
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+        uuid created_by FK
+    }
+
+    wood_panels {
+        uuid id PK
+        uuid wood_type_id FK
+        numeric width_cm
+        numeric length_cm
+        integer thickness_mm
+        integer quantity
+        numeric cost_per_panel
+        varchar grain_orientation
+        varchar surface_treatment
+        boolean is_active
+        varchar sku
+        boolean is_standard
+        timestamptz created_at
+        timestamptz updated_at
+        uuid created_by FK
+    }
+
+    wood_types {
+        uuid id PK
+        varchar name
+        text description
+        numeric density
+        numeric cost_per_m2
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+        uuid created_by FK
+    }
+
+    categories ||--o{ categories : "parent_id"
+    categories ||--o{ products : "category_id"
+    packaging_presentation_types ||--o{ product_packagings : "presentation_type_id"
+    products ||--o{ product_box_specs : "product_id"
+    products ||--o{ product_images : "product_id"
+    products ||--o{ product_length_specs : "product_id"
+    products ||--o{ product_packagings : "product_id"
+    products ||--o{ product_price_history : "product_id"
+    products ||--o{ product_unit_specs : "product_id"
+    products ||--o{ product_volume_specs : "product_id"
+    products ||--o{ product_weight_specs : "product_id"
+    products ||--o{ price_list_items : "product_id"
+    products ||--o{ tile_specs : "product_id"
+    products ||--o{ pvc_combo_config : "product_id"
+    price_lists ||--o{ price_list_items : "price_list_id"
+    wood_types ||--o{ wood_panels : "wood_type_id"
+```

@@ -1,0 +1,39 @@
+```mermaid
+erDiagram
+
+    customers {
+        uuid id PK
+        varchar document_type
+        varchar document_number
+        varchar name
+        varchar email
+        varchar phone
+        varchar city
+        varchar department
+        varchar customer_type
+        boolean is_active
+        timestamp created_at
+        uuid salesperson_id FK
+        uuid branch_id
+        numeric credit_limit
+        integer payment_terms
+        timestamp updated_at
+    }
+
+    customer_credit_settings {
+        uuid customer_id PK,FK
+        boolean is_credit_enabled
+        numeric credit_limit
+        integer payment_terms_days
+        varchar accounts_receivable_account
+        varchar accounts_payable_account
+        boolean send_account_statement
+        text block_reason
+        integer version
+        timestamp created_at
+        timestamp updated_at
+        boolean block_sales_on_limit_exceeded
+    }
+
+    customers ||--o{ customer_credit_settings : "customer_id"
+```

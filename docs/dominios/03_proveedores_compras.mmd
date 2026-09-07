@@ -1,0 +1,68 @@
+```mermaid
+erDiagram
+
+    suppliers {
+        uuid id PK
+        varchar name
+        varchar contact_name
+        varchar email
+        varchar phone
+        varchar city
+        varchar department
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+        varchar document_type
+        varchar document_number
+        varchar person_type
+        varchar tax_responsibility
+        integer payment_terms_days
+    }
+
+    purchase_orders {
+        uuid id PK
+        varchar purchase_number
+        uuid supplier_id FK
+        varchar invoice_number
+        timestamptz invoice_date
+        varchar status
+        numeric total_amount
+        text notes
+        uuid created_by FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    purchase_items {
+        uuid id PK
+        uuid purchase_order_id FK
+        uuid product_id FK
+        numeric quantity
+        numeric cost_price
+        numeric tax_rate
+        numeric sale_price
+        numeric subtotal
+        numeric total
+        text notes
+        timestamptz created_at
+        uuid packaging_id FK
+    }
+
+    upload_tokens {
+        uuid id PK
+        varchar token
+        uuid purchase_order_id FK
+        uuid user_id FK
+        uuid supplier_id FK
+        timestamptz expires_at
+        integer max_images
+        integer used_count
+        boolean is_active
+        timestamptz created_at
+    }
+
+    suppliers ||--o{ purchase_orders : "supplier_id"
+    purchase_orders ||--o{ purchase_items : "purchase_order_id"
+    purchase_orders ||--o{ upload_tokens : "purchase_order_id"
+    suppliers ||--o{ upload_tokens : "supplier_id"
+```

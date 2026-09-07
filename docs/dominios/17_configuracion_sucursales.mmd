@@ -1,0 +1,161 @@
+```mermaid
+erDiagram
+
+    branches {
+        uuid id PK
+        varchar code
+        varchar name
+        varchar address
+        varchar city
+        varchar department
+        varchar phone
+        varchar email
+        varchar timezone
+        boolean is_headquarters
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+        text print_preferences
+    }
+
+    company_settings {
+        uuid id PK
+        varchar name
+        varchar legal_name
+        varchar document_type
+        varchar identification_number
+        varchar email
+        varchar phone
+        varchar address
+        varchar city
+        varchar department
+        varchar postal_code
+        varchar country
+        varchar tax_regime
+        varchar ciuu_code
+        varchar logo_url
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+        uuid branch_id FK
+        integer factus_numbering_range_id
+        integer factus_credit_note_range_id
+        integer factus_support_doc_range_id
+        varchar factus_municipality_id
+        varchar website
+    }
+
+    system_settings {
+        uuid id PK
+        varchar key
+        text value
+        varchar category
+        text description
+        integer version
+        uuid updated_by FK
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    features {
+        uuid id
+        varchar key
+        varchar name
+        text description
+        boolean enabled
+        varchar module
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    tax_settings {
+        uuid id PK
+        uuid branch_id FK
+        varchar label
+        varchar regime
+        uuid default_tax_id FK
+        boolean retention_enabled
+        numeric retention_rate
+        boolean electronic_invoicing_enabled
+        text metadata
+        boolean is_active
+        integer version
+        timestamptz created_at
+    }
+
+    taxes {
+        uuid id PK
+        varchar name
+        varchar tax_type
+        numeric rate
+        text description
+        boolean is_creditable
+        varchar sales_account
+        varchar purchases_account
+        varchar sales_return_account
+        varchar purchases_return_account
+        boolean is_active
+        boolean is_system
+        timestamptz created_at
+        uuid created_by FK
+    }
+
+    measurement_units {
+        uuid id PK
+        varchar code
+        varchar name
+        varchar symbol
+        varchar commercialization_type
+        boolean is_system
+        boolean is_active
+        integer sort_order
+        timestamptz created_at
+        numeric factor_to_base
+        boolean is_base
+    }
+
+    payment_methods {
+        uuid id PK
+        varchar name
+        varchar payment_type
+        text description
+        boolean requires_reference
+        boolean requires_bank
+        boolean requires_account
+        varchar bank_name
+        varchar account_number
+        varchar account_type
+        boolean is_active
+        boolean is_system
+        boolean is_default
+        timestamptz created_at
+        uuid created_by FK
+        varchar icon
+        text image_url
+    }
+
+    document_numbering {
+        uuid id PK
+        varchar document_type
+        varchar point_of_sale_id
+        varchar point_of_sale_name
+        varchar prefix
+        varchar current_number
+        varchar start_number
+        varchar end_number
+        varchar number_format
+        varchar resolution_number
+        date resolution_date
+        date resolution_valid_from
+        date resolution_valid_to
+        boolean is_active
+        boolean is_default
+        text description
+        timestamptz created_at
+        uuid created_by FK
+    }
+
+    branches ||--o{ company_settings : "branch_id"
+    branches ||--o{ tax_settings : "branch_id"
+    taxes ||--o{ tax_settings : "default_tax_id"
+```

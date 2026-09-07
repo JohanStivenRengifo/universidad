@@ -1,0 +1,172 @@
+```mermaid
+erDiagram
+
+    cash_shifts {
+        uuid id PK
+        varchar shift_number
+        uuid user_id FK
+        varchar user_name
+        varchar status
+        timestamptz started_at
+        timestamptz ended_at
+        date shift_date
+        numeric opening_cash_amount
+        numeric closing_cash_amount
+        numeric expected_cash_amount
+        numeric cash_difference
+        integer total_sales_count
+        numeric total_sales_amount
+        numeric total_tax_amount
+        numeric total_discount_amount
+        numeric cash_sales_amount
+        numeric card_sales_amount
+        numeric transfer_sales_amount
+        text opening_notes
+        text closing_notes
+        timestamptz created_at
+        uuid branch_id
+    }
+
+    cash_movements {
+        uuid id PK
+        uuid shift_id FK
+        varchar movement_type
+        numeric amount
+        text description
+        varchar reference_type
+        uuid reference_id
+        uuid created_by FK
+        timestamptz created_at
+        uuid payment_method_id FK
+    }
+
+    shift_command_idempotency {
+        text idempotency_key PK
+        text command_name
+        uuid shift_id FK
+        text result
+        timestamptz created_at
+    }
+
+    bank_accounts {
+        uuid id PK
+        varchar name
+        varchar account_type
+        varchar bank_name
+        varchar account_number
+        varchar currency
+        numeric initial_balance
+        numeric current_balance
+        boolean is_active
+        text notes
+        timestamp created_at
+        uuid created_by FK
+    }
+
+    bank_reconciliations {
+        uuid id PK
+        uuid account_id FK
+        date statement_date
+        numeric statement_balance
+        numeric book_balance
+        numeric reconciled_balance
+        numeric difference_amount
+        varchar status
+        text notes
+        timestamp completed_at
+        timestamp created_at
+        uuid created_by FK
+        uuid completed_by FK
+        integer version
+        numeric erp_balance
+        numeric bank_balance
+    }
+
+    bank_reconciliation_matches {
+        uuid id PK
+        uuid reconciliation_id FK
+        uuid statement_line_id FK
+        uuid treasury_movement_id FK
+        uuid financial_movement_id FK
+        uuid cash_receipt_id FK
+        numeric matched_amount
+        numeric confidence
+        varchar match_method
+        text ai_explanation
+        varchar status
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    bank_statement_imports {
+        uuid id PK
+        uuid reconciliation_id FK
+        uuid account_id FK
+        text file_name
+        text format
+        integer line_count
+        uuid imported_by FK
+        timestamptz created_at
+    }
+
+    bank_statement_lines {
+        uuid id PK
+        uuid reconciliation_id FK
+        uuid account_id FK
+        date line_date
+        text description
+        text reference
+        numeric amount
+        numeric running_balance
+        integer import_row_number
+        varchar status
+        text raw_data
+        timestamptz created_at
+        uuid import_id FK
+    }
+
+    account_movements {
+        uuid id PK
+        uuid account_id FK
+        varchar movement_type
+        numeric amount
+        text description
+        varchar reference_number
+        date movement_date
+        varchar category
+        uuid related_account_id FK
+        uuid related_movement_id FK
+        boolean is_reconciled
+        uuid reconciliation_id
+        timestamp created_at
+        uuid created_by FK
+        varchar source_type
+        uuid source_id
+    }
+
+    reconciliation_items {
+        uuid id PK
+        uuid reconciliation_id FK
+        uuid movement_id FK
+        numeric statement_amount
+        numeric book_amount
+        numeric difference_amount
+        boolean is_matched
+        text notes
+        timestamp created_at
+    }
+
+    cash_shifts ||--o{ cash_movements : "shift_id"
+    cash_shifts ||--o{ shift_command_idempotency : "shift_id"
+    bank_accounts ||--o{ account_movements : "account_id"
+    bank_accounts ||--o{ bank_reconciliations : "account_id"
+    bank_accounts ||--o{ bank_statement_imports : "account_id"
+    bank_accounts ||--o{ bank_statement_lines : "account_id"
+    bank_reconciliations ||--o{ bank_reconciliation_matches : "reconciliation_id"
+    bank_reconciliations ||--o{ bank_statement_imports : "reconciliation_id"
+    bank_reconciliations ||--o{ bank_statement_lines : "reconciliation_id"
+    bank_reconciliations ||--o{ reconciliation_items : "reconciliation_id"
+    bank_statement_imports ||--o{ bank_statement_lines : "import_id"
+    account_movements ||--o{ bank_reconciliation_matches : "treasury_movement_id"
+    account_movements ||--o{ reconciliation_items : "movement_id"
+```

@@ -1,0 +1,64 @@
+```mermaid
+erDiagram
+
+    collection_cases {
+        uuid id PK
+        uuid customer_id FK
+        varchar status
+        numeric total_balance
+        numeric overdue_balance
+        integer max_days_past_due
+        integer risk_score
+        uuid assigned_to_user_id FK
+        timestamptz last_action_at
+        timestamptz escalated_to_legal_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    collection_management_actions {
+        uuid id PK
+        uuid customer_id FK
+        varchar action_type
+        varchar channel
+        varchar outcome
+        text notes
+        uuid promise_id FK
+        uuid created_by FK
+        timestamptz created_at
+        uuid case_id FK
+    }
+
+    collection_payment_promises {
+        uuid id PK
+        uuid customer_id FK
+        numeric promised_amount
+        date promised_date
+        varchar status
+        text notes
+        uuid created_by FK
+        timestamptz fulfilled_at
+        timestamptz broken_at
+        timestamptz created_at
+        uuid case_id FK
+        uuid assigned_to_user_id FK
+    }
+
+    collection_reminders {
+        uuid id PK
+        uuid customer_id FK
+        varchar channel
+        varchar status
+        text subject
+        text message
+        timestamptz scheduled_at
+        timestamptz sent_at
+        text error_message
+        uuid created_by FK
+        timestamptz created_at
+    }
+
+    collection_cases ||--o{ collection_management_actions : "case_id"
+    collection_cases ||--o{ collection_payment_promises : "case_id"
+    collection_payment_promises ||--o{ collection_management_actions : "promise_id"
+```
